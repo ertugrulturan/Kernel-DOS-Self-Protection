@@ -1,4 +1,11 @@
 # Kernel DOS Self-Protection 
+(Use Only Root) Install,
+``
+wget https://github.com/ertugrulturan/Kernel-DOS-Self-Protection/raw/main/install
+``
+```
+chmox +x install && bash install
+```
 # [BASH] Auto IPTABLES &amp; KERNEL Anti DDoS Rules 
 
 ONLY NGİNX CONFİG (conf = https://obir.ninja/guvenlik/12/nginx-layer7-saldirilarini-engelle/),
