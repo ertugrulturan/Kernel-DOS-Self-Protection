@@ -4,7 +4,7 @@
 wget https://github.com/ertugrulturan/Kernel-DOS-Self-Protection/raw/main/install
 ```
 ```
-chmox +x install && bash install
+chmod +x install && bash install
 ```
 # [BASH] Auto IPTABLES &amp; KERNEL Anti DDoS Rules 
 
