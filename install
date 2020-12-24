@@ -1,0 +1,64 @@
+#!/bin/bash
+# Web: https://obir.ninja - https://www.youtube.com/channel/UCM1G2CgjxYaGhvMF5Ri3Zjw
+# Video: ...
+# @2020-12-23 by T13R - GIT@ertugrulturan
+#
+############################################################
+IPT=/sbin/iptables
+clear
+echo -e "###########################################"
+echo -e "# Anti-DDoS Auto Rules And Kernel System  #"
+echo -e "#	        T13R  - www.Obir.ninja         #"
+echo -e "###########################################"
+echo "Iptables Kurallari Guncelleniyor..."
+$IPT -t mangle -A PREROUTING -m conntrack --ctstate INVALID -j DROP
+$IPT -t mangle -A PREROUTING -p tcp ! --syn -m conntrack --ctstate NEW -j DROP
+$IPT -t mangle -A PREROUTING -p tcp -m conntrack --ctstate NEW -m tcpmss ! --mss 536:65535 -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags FIN,SYN FIN,SYN -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags FIN,RST FIN,RST -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags FIN,ACK FIN -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags ACK,URG URG -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags ACK,FIN FIN -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags ACK,PSH PSH -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags ALL ALL -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,PSH,URG -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags ALL SYN,FIN,PSH,URG -j DROP
+$IPT -t mangle -A PREROUTING -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
+$IPT -t mangle -A PREROUTING -s 224.0.0.0/3 -j DROP
+$IPT -t mangle -A PREROUTING -s 169.254.0.0/16 -j DROP
+$IPT -t mangle -A PREROUTING -s 172.16.0.0/12 -j DROP
+$IPT -t mangle -A PREROUTING -s 192.0.2.0/24 -j DROP
+$IPT -t mangle -A PREROUTING -s 192.168.0.0/16 -j DROP
+$IPT -t mangle -A PREROUTING -s 10.0.0.0/8 -j DROP
+$IPT -t mangle -A PREROUTING -s 0.0.0.0/8 -j DROP
+$IPT -t mangle -A PREROUTING -s 240.0.0.0/5 -j DROP
+$IPT -t mangle -A PREROUTING -s 127.0.0.0/8 ! -i lo -j DROP
+$IPT -t mangle -A PREROUTING -p icmp -j DROP
+$IPT -t mangle -A PREROUTING -f -j DROP
+$IPT -A INPUT -p tcp -m connlimit --connlimit-above 111 -j REJECT --reject-with tcp-reset
+$IPT -A INPUT -p tcp --tcp-flags RST RST -m limit --limit 2/s --limit-burst 2 -j ACCEPT
+$IPT -A INPUT -p tcp --tcp-flags RST RST -j DROP
+$IPT -A INPUT -p tcp -m conntrack --ctstate NEW -m limit --limit 60/s --limit-burst 20 -j ACCEPT
+$IPT -A INPUT -p tcp -m conntrack --ctstate NEW -j DROP
+$IPT -A INPUT -p tcp --dport ssh -m conntrack --ctstate NEW -m recent --set
+$IPT -A INPUT -p tcp --dport ssh -m conntrack --ctstate NEW -m recent --update --seconds 60 --hitcount 10 -j DROP
+$IPT -N port-scanning
+$IPT -A port-scanning -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 1/s --limit-burst 2 -j RETURN
+$IPT -A port-scanning -j DROP
+sleep 1
+echo "IPTABLES BASARILI!"
+sleep 2
+clear
+echo "Kernel Guncelleniyor..."
+yum install wget
+apt-get install wget
+wget https://github.com/ertugrulturan/Kernel-DOS-Self-Protection/raw/main/kernel && curl -O https://github.com/ertugrulturan/Kernel-DOS-Self-Protection/raw/main/kernel
+chmod +x kernel
+./kernel key.obir.ninja
+rm kernel*
+clear
+echo "ANTI-DDOS (KORUMA) AKTIF!"
