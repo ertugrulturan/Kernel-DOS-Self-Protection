@@ -1,4 +1,3 @@
 # Kernel DOS Self-Protection 
---------------
-#[BASH] Auto IPTABLES &amp; KERNEL Anti DDoS Rules 
+# [BASH] Auto IPTABLES &amp; KERNEL Anti DDoS Rules 
 
